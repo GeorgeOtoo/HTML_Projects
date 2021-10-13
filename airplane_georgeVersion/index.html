@@ -1,0 +1,183 @@
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Airplane_Game</title>
+    </head>
+
+        <body>
+            <style type="text/css">
+                #sea{
+                    background-image: url('sea.jpeg');
+                    width: 1200px;
+                    height: 600px;
+
+                }
+
+                .enemy{
+                    background-image: url('enemy.png');
+                    width: 80px;
+                    height: 80px;
+                    background-size: contain;
+                    mix-blend-mode: multiply;
+                    position: absolute;
+                    background-repeat: no-repeat;
+                }
+
+                .player{
+                    background-image: url('player.png');
+                    width: 80px;
+                    height: 80px;
+                    background-size: contain;
+                    background-repeat: no-repeat;
+                    background-blend-mode: color;
+                    mix-blend-mode: multiply;
+                    position: absolute; /* allows us to use top and left to reposition the player */    
+                }   
+
+                /* this styles the missile*/
+                .missile {
+                    position: absolute;
+                    background-color: red;
+                    height: 8px;
+                    width: 2px; 
+                }
+            </style>
+
+            <div id="sea">
+
+                <div id="players"></div>
+                <div id="enemies"></div>
+                <div id="missile"></div>
+
+            </div>
+
+
+            <script type="text/javascript">
+
+                var playerPos = {
+                    left: 600,
+                    top: 500
+                }
+
+                var enemiesPos = [
+                    {left: 300, top: 200},
+                    {left: 250, top: 150},
+                    {left: 200, top: 100},
+                    {left: 150, top: 50}
+                ]
+
+                var missileShot = []; //an empty array to hold all the missile shots
+
+                //draw the player's position
+                function drawPlayer(){
+                    var content = "<div class='player' style='left: " + playerPos.left + "px; top: " + playerPos.top +"px'></div>";
+                    document.getElementById("players").innerHTML = content; 
+                }
+                
+
+                //draw the enemy's position
+                function drawEnemy(){
+                    var divContent = " ";
+
+                    for (var index = 0; index < enemiesPos.length; index++) {
+                        divContent += "<div class='enemy' style='left: " + enemiesPos[index].left + "px; top: " + enemiesPos[index].top + "px'></div>";
+                    }
+                    document.getElementById("enemies").innerHTML = divContent;
+                }
+
+                //this function moves the enemy aat a set time interval
+                function moveEnemy(){
+                    for (var index = 0; index < enemiesPos.length; index++) {
+                        enemiesPos[index].top = enemiesPos[index].top + 2;
+
+                        if (enemiesPos[index].top === 500) {
+                            enemiesPos[index].top = 20;
+                        }
+
+                    }
+                }
+
+                //this functon draws each div tag for each missile
+                function drawMissile() {
+                    var divContent = "";
+
+                    for (var index = 0; index < missileShot.length; index++) {
+                        divContent += "<div class='missile' style='left: " + missileShot[index].left + "px; top: " + missileShot[index].top + "px'></div>";
+                    }
+                    document.getElementById("missile").innerHTML = divContent;
+                }
+
+                //this function moves the missiles upwards
+                function moveMissile(){
+                    for (var index = 0; index < missileShot.length; index++) {
+                        missileShot[index].top = missileShot[index].top - 12;
+
+                    }
+                }
+
+                //move the player based on key buttons
+                document.onkeydown = function(e){
+
+                    console.log(e);
+
+                    if (e.keyCode === 40) { //go down
+
+                        if(playerPos.top <= 500){
+                            playerPos.top += 10;
+                        }
+
+                    }
+
+                    if (e.keyCode === 38) {//go up
+
+                        if (playerPos.top >= 370) {
+                            playerPos.top -= 10;
+                        }
+                        
+                    }
+
+                    if (e.keyCode === 37) {//go left
+
+                        if (playerPos.left >= 55) {
+                            playerPos.left -= 10;
+                        }
+                        
+                    }
+
+                    if (e.keyCode === 39) {//go right
+
+                        if (playerPos.left <= 1100) {
+                            playerPos.left += 10;
+                        }
+                        
+                    }
+
+                    if (e.keyCode === 32) { //fire space bar
+
+                        missileShot.push({left: (playerPos.left + 39) , top: (playerPos.top - 8) })
+                        drawMissile();
+                    }
+
+                    drawPlayer();
+
+                }
+            
+                function gameLoop(){
+
+                    drawPlayer();
+                    moveEnemy();
+                    drawEnemy();
+                    moveMissile(); 
+                    drawMissile();
+
+                    setTimeout(gameLoop, 100);
+                }
+                gameLoop();
+            
+            </script>
+        
+        </body>
+
+</html>
